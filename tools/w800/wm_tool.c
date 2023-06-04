@@ -9,17 +9,13 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <stdarg.h>
-#ifdef __MINGW32__
-#include <windows.h>
-#else
 #include <signal.h>
 #include <pthread.h>
 #include <termios.h>
 #include <sys/ioctl.h>
-#endif
 
 #define WM_TOOL_PATH_MAX                      256
-#define WM_TOOL_ONCE_READ_LEN	              1024
+#define WM_TOOL_ONCE_READ_LEN                 1024
 
 #define WM_TOOL_RUN_IMG_HEADER_LEN            0x100
 
@@ -31,6 +27,7 @@
 #define WM_TOOL_IMG_HEAD_MAGIC_NO            (0xA0FFFF9F)
 
 #define WM_TOOL_DEFAULT_BAUD_RATE             115200
+#define WM_TOOL_DOWNLOAD_BAUD_RATE            2000000
 
 #define WM_TOOL_DOWNLOAD_TIMEOUT_SEC          (60 * 1)
 
@@ -125,8 +122,8 @@ static int wm_tool_show_usage = 0;
 static int wm_tool_list_com   = 0;
 static int wm_tool_show_ver   = 0;
 
-static char wm_tool_serial_path[WM_TOOL_PATH_MAX] = "/dev/ttyS0";
-static unsigned int wm_tool_download_serial_rate  = WM_TOOL_DEFAULT_BAUD_RATE;
+static char wm_tool_serial_path[WM_TOOL_PATH_MAX] = "/dev/ttyUSB0";
+static unsigned int wm_tool_download_serial_rate  = WM_TOOL_DOWNLOAD_BAUD_RATE;
 static unsigned int wm_tool_normal_serial_rate    = WM_TOOL_DEFAULT_BAUD_RATE;
 
 static wm_tool_dl_action_e wm_tool_dl_action = WM_TOOL_DL_ACTION_NONE;
