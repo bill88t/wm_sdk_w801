@@ -96,18 +96,18 @@ static void demo_uart_task(void *sdata)
             opt.charlength = TLS_UART_CHSIZE_8BIT;
             opt.flow_ctrl = TLS_UART_FLOW_CTRL_NONE;
 
-            //选择待使用的引脚及具体的复用功能
             /* UART1_RX-PB07  UART1_TX-PB06 */
-            wm_uart1_rx_config(WM_IO_PB_07);
-            wm_uart1_tx_config(WM_IO_PB_06);
+            wm_uart1_rx_config(WM_IO_PB_19);
+            wm_uart1_tx_config(WM_IO_PB_20);
 
-            if (WM_SUCCESS != tls_uart_port_init(TLS_UART_1, &opt, 0))
-            {
-                printf("uart1 init error\n");
+            if (WM_SUCCESS == tls_uart_port_init(TLS_UART_0, &opt, 0)){
+                printf("wm_uart_demo: Registered uart0\n");
+            } else {
+                printf("wm_uart_demo: Fail\n");
             }
 
-            tls_uart_rx_callback_register((u16) TLS_UART_1, (s16(*)(u16, void*))demo_uart_rx, NULL);
-            tls_uart_tx_callback_register(TLS_UART_1, (s16(*)(struct tls_uart_port *))uart_tx_sent_callback);
+            tls_uart_rx_callback_register((u16) TLS_UART_0, (s16(*)(u16, void*))demo_uart_rx, NULL);
+            tls_uart_tx_callback_register(TLS_UART_0, (s16(*)(struct tls_uart_port *))uart_tx_sent_callback);
         }
         break;
 
@@ -118,7 +118,7 @@ static void demo_uart_task(void *sdata)
             {
                 len = (rx_len > DEMO_UART_RX_BUF_SIZE) ? DEMO_UART_RX_BUF_SIZE : rx_len;
                 memset(uart->rx_buf, 0, (DEMO_UART_RX_BUF_SIZE + 1));
-                ret = tls_uart_read(TLS_UART_1, (u8 *) uart->rx_buf, len);  /* input */
+                ret = tls_uart_read(TLS_UART_0, (u8 *) uart->rx_buf, len);  /* input */
                 if (ret <= 0)
                 {
                     break;
@@ -127,8 +127,7 @@ static void demo_uart_task(void *sdata)
                 rx_len -= ret;
                 uart->rx_data_len -= ret;
 
-                tls_uart_write(TLS_UART_1, uart->rx_buf, len);  /* output */
-                //tls_uart_dma_write(uart->rx_buf, len, uart_dma_done, TLS_UART_1);
+                tls_uart_write(TLS_UART_0, uart->rx_buf, len);
             }
             if (uart->rx_msg_num > 0)
             {
@@ -147,7 +146,6 @@ static void demo_uart_task(void *sdata)
 
 int uart_demo(int bandrate, int parity, int stopbits)
 {
-    printf("\nuart demo param=%d, %d, %d\n", bandrate, parity, stopbits);
     if (NULL == demo_uart)
     {
         demo_uart = tls_mem_alloc(sizeof(DEMO_UART_ST));
@@ -166,8 +164,8 @@ int uart_demo(int bandrate, int parity, int stopbits)
         tls_os_task_create(NULL, NULL,
                            demo_uart_task,
                            (void *) demo_uart,
-                           (void *) demo_uart_task_stk, /** 任务栈的起始地址 */
-                           DEMO_UART_TAST_STK_SIZE,                         /** 任务栈的大小     */
+                           (void *) demo_uart_task_stk,
+                           DEMO_UART_TAST_STK_SIZE,
                            DEMO_UART_TASK_PRIO, 0);
     }
     if (-1 == bandrate)

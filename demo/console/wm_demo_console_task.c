@@ -201,12 +201,12 @@ int demo_cmd_execute(Demo_Console *sys)
 
     for(i = 0; ; i++)
     {
-    	strfirst = (u8 *)strstr((char *)sys->rx_buf, console_tbl[i].cmd);	
+    	strfirst = (u8 *)strstr((char *)sys->rx_buf, console_tbl[i].cmd);
         if (strfirst != NULL)
         {
 			/*remove \r\n from input string*/
 			str_r = (u8 *)strchr((char *)strfirst, '\r');
-			str_n = (u8 *)strchr((char *)strfirst, '\n');			
+			str_n = (u8 *)strchr((char *)strfirst, '\n');
 			if (str_r&&(str_n == NULL))
 			{
 				if (str_r > strfirst)
@@ -219,7 +219,7 @@ int demo_cmd_execute(Demo_Console *sys)
 				if (str_n > strfirst)
 				{
 					strfirst[str_n - strfirst] = '\0';
-				}				
+				}
 			}
 			else if (str_r && str_n)
 			{
@@ -404,11 +404,23 @@ void demo_console_task(void *sdata)
     void *msg;
     int ret = 0;
 
+    tls_uart_options_t opt;
+    opt.baudrate = 115200;
+    opt.paritytype = TLS_UART_PMODE_DISABLED;
+    opt.stopbits = TLS_UART_ONE_STOPBITS;
+    opt.charlength = TLS_UART_CHSIZE_8BIT;
+    opt.flow_ctrl = TLS_UART_FLOW_CTRL_NONE;
+    wm_uart1_rx_config(WM_IO_PB_19);
+    wm_uart1_tx_config(WM_IO_PB_20);
     demo_console_show_help(NULL);
     demo_console_malloc();
     gstConsole.rptr = 0;
-    tls_uart_set_baud_rate(TLS_UART_0, 115200);
-	tls_uart_rx_callback_register(TLS_UART_0, demo_console_rx, NULL);
+    if (WM_SUCCESS == tls_uart_port_init(TLS_UART_0, &opt, 0)){
+        printf("wm_demo_console: Registered uart0\n");
+    } else {
+        printf("wm_demo_console: Fail\n");
+    }
+    tls_uart_rx_callback_register(TLS_UART_0, demo_console_rx, NULL);
 
     for(;;)
     {
@@ -422,7 +434,7 @@ void demo_console_task(void *sdata)
             gstConsole.rx_data_len -= ret;
             gstConsole.rptr += ret;
             ret = demo_cmd_execute(&gstConsole);	//parse command and execute if needed
-            if((DEMO_CONSOLE_CMD == ret) || (DEMO_CONSOLE_WRONG_CMD == ret))	
+            if((DEMO_CONSOLE_CMD == ret) || (DEMO_CONSOLE_WRONG_CMD == ret))
             {
                 /*modify*/
                 memset(gstConsole.rx_buf, 0, DEMO_CONSOLE_BUF_SIZE);	/*After command finished transfering, clear buffer*/

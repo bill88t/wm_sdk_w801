@@ -28,7 +28,7 @@
 //LWIP CONFIG
 #define TLS_CONFIG_IPV4                 				CFG_ON      //must ON
 #define TLS_CONFIG_IPV6                 				CFG_OFF
-#define TLS_CONFIG_DHCP_OPTION60						"Winnermicro:W800_01"
+#define TLS_CONFIG_DHCP_OPTION60						"Winnermicro:W801_C400"
 
 /** SOCKET CONFIG **/
 #define TLS_CONFIG_SOCKET_STD							CFG_ON
