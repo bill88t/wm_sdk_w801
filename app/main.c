@@ -1,4 +1,5 @@
 #include "wm_include.h"
+#include "wm_demo.h"
 //#include <string.h>
 
 extern void mdelay(uint32_t ms);
@@ -50,13 +51,21 @@ void ledtest(void){ // Led test
 void UserMain(void){ // This is the main task
     tls_uart_set_baud_rate(TLS_UART_0, 115200);
     ledsetup();
-    wm_printf("\nInit complete\n");
+    wm_printf("w801: START\n");
 
     while (1){
-        wm_printf("LED Loop start\n");
+        wm_printf("w801: LOOP\n");
+
+        wm_printf("w801: LEDTEST\n");
         ledtest();
-        wm_printf("Loop end\n");
-        //mdelay(2000);
+        wm_printf("w801: LEDTEST END\n");
+
+        wm_printf("w801: CONSOLE\n");
+        CreateDemoTask();
+        wm_printf("w801: CONSOLE END\n");
+        wm_printf("w801: LOOP END\n");
     }
+
+    wm_printf("w801: END\n");
 }
 
