@@ -2883,7 +2883,7 @@ static int wm_tool_get_file_size(const char* filename)
 
 static char *wm_tool_get_name(const char *name)
 {
-    static char sz_name[WM_TOOL_PATH_MAX] = {0};
+    static char sz_name[WM_TOOL_PATH_MAX+1] = {0};
     char *p = (char *)name;
     char *q = (char *)name;
 

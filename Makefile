@@ -5,8 +5,7 @@ ifndef PDIR # {
 GEN_IMAGES= $(TARGET).elf
 GEN_BINS = $(TARGET).bin
 SUBDIRS = \
-    $(TOP_DIR)/app #\
-#    $(TOP_DIR)/demo
+    $(TOP_DIR)/app
 endif # } PDIR
 
 ifndef PDIR # {
@@ -17,14 +16,12 @@ SUBDIRS += \
     $(TOP_DIR)/platform/drivers     \
     $(TOP_DIR)/platform/sys         \
     $(TOP_DIR)/src/network          \
-    $(TOP_DIR)/src/os               \
-    $(TOP_DIR)/src/app
+    $(TOP_DIR)/src/os
 endif
 endif
 
 COMPONENTS_$(TARGET) =	\
-    $(TOP_DIR)/app/libuser$(LIB_EXT) #\
-#    $(TOP_DIR)/demo/libdemo$(LIB_EXT)
+    $(TOP_DIR)/app/libuser$(LIB_EXT)
 
 ifeq ($(USE_LIB), 0)
 COMPONENTS_$(TARGET) += \
@@ -33,12 +30,11 @@ COMPONENTS_$(TARGET) += \
     $(TOP_DIR)/platform/drivers/libdrivers$(LIB_EXT)    \
     $(TOP_DIR)/platform/sys/libwmsys$(LIB_EXT)          \
     $(TOP_DIR)/src/network/libnetwork$(LIB_EXT)         \
-    $(TOP_DIR)/src/os/libos$(LIB_EXT)                   \
-    $(TOP_DIR)/src/app/libapp$(LIB_EXT)
+    $(TOP_DIR)/src/os/libos$(LIB_EXT)
 endif
 
 
-LINKLIB = 	\
+LINKLIB = \
     $(TOP_DIR)/lib/$(CONFIG_ARCH_TYPE)/libwlan$(LIB_EXT) \
     $(TOP_DIR)/lib/$(CONFIG_ARCH_TYPE)/libbt$(LIB_EXT)
 
